@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ardis Music</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 70%, #090d16 100%);
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-color: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-main);
+      padding: 24px;
+    }
+
+    .player-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      width: 100%;
+      max-width: 360px;
+      padding: 28px 24px 32px 24px;
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.56);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Cover Art Modern Container */
+    .cover-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin-bottom: 24px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .cover-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .player-card:hover .cover-wrapper img {
+      transform: scale(1.04);
+    }
+
+    /* Track Details - Multiline Clean Layout */
+    .track-details {
+      text-align: center;
+      width: 100%;
+      margin-bottom: 24px;
+      padding: 0 6px;
+    }
+
+    .title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+    }
+
+    .artist {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    /* Progress Bar Modern Native Feel */
+    .progress-container {
+      width: 100%;
+      margin-bottom: 28px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-color);
+      border-radius: 12px;
+      position: relative;
+      transition: width 0.1s linear;
+    }
+
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%) scale(0);
+      width: 12px;
+      height: 12px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.15s ease;
+    }
+
+    .progress-bar-bg:hover .progress-bar-fill::after {
+      transform: translateY(-50%) scale(1);
+    }
+
+    .time-stamps {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* Modern Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+    }
+
+    .btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-play {
+      background: var(--accent-color);
+      border: none;
+      color: #ffffff;
+      width: 64px;
+      height: 64px;
+      font-size: 1.4rem;
+      box-shadow: 0 10px 25px var(--accent-glow);
+    }
+
+    .btn-play:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+      transform: scale(1.05);
+      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-play:active {
+      transform: scale(0.98);
+    }
+
+    .btn.active {
+      color: var(--accent-color);
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player-card">
+    <!-- Cover Art -->
+    <div class="cover-wrapper">
+      <img id="cover" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80" alt="Album Cover">
+    </div>
+
+    <!-- Track Details -->
+    <div class="track-details">
+      <h2 class="title" id="title">Arti Cinta - Ari Lasso (Cover by Ardis)</h2>
+      <p class="artist" id="artist">Diar Ardis</p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-bar-bg" id="progress-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="time-stamps">
+        <span id="current-time">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="btn" id="btn-repeat" title="Ulangi"><i class="fa-solid fa-repeat"></i></button>
+      <button class="btn btn-play" id="btn-play" title="Putar"><i class="fa-solid fa-play"></i></button>
+    </div>
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="audio"></audio>
+
+  <script>
+    // DATA LAGU
+    const song = {
+      title: "Arti Cinta - Ari Lasso (Cover by Ardis)",
+      artist: "Diar Ardis",
+      cover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80",
+      src: "https://diar16.github.io/ardismusic/Diar%20Ardis%20-%20Arti%20Cinta%202026-10-31%2014_13.m4a"
+    };
+
+    let isPlaying = false;
+    let isRepeat = false;
+
+    // Element Selector
+    const audio = document.getElementById('audio');
+    const cover = document.getElementById('cover');
+    const title = document.getElementById('title');
+    const artist = document.getElementById('artist');
+    const playBtn = document.getElementById('btn-play');
+    const repeatBtn = document.getElementById('btn-repeat');
+    const progressBg = document.getElementById('progress-bg');
+    const progressFill = document.getElementById('progress-fill');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+
+    // Load Song
+    function loadSong() {
+      title.textContent = song.title;
+      artist.textContent = song.artist;
+      cover.src = song.cover;
+      audio.src = song.src;
+    }
+
+    // Play / Pause
+    function playSong() {
+      isPlaying = true;
+      audio.play();
+      playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    }
+
+    function pauseSong() {
+      isPlaying = false;
+      audio.pause();
+      playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    }
+
+    playBtn.addEventListener('click', () => {
+      isPlaying ? pauseSong() : playSong();
+    });
+
+    // Update Progress Bar
+    audio.addEventListener('timeupdate', (e) => {
+      const { duration, currentTime } = e.srcElement;
+      if (duration) {
+        const progressPercent = (currentTime / duration) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+
+        // Format waktu
+        const curMins = Math.floor(currentTime / 60);
+        const curSecs = Math.floor(currentTime % 60);
+        const durMins = Math.floor(duration / 60);
+        const durSecs = Math.floor(duration % 60);
+
+        currentTimeEl.textContent = `${curMins}:${curSecs < 10 ? '0' : ''}${curSecs}`;
+        durationEl.textContent = `${durMins}:${durSecs < 10 ? '0' : ''}${durSecs}`;
+      }
+    });
+
+    // Seek Progress
+    progressBg.addEventListener('click', (e) => {
+      const width = progressBg.clientWidth;
+      const clickX = e.offsetX;
+      const duration = audio.duration;
+      audio.currentTime = (clickX / width) * duration;
+    });
+
+    // End of Song
+    audio.addEventListener('ended', () => {
+      if (isRepeat) {
+        playSong();
+      } else {
+        isPlaying = false;
+        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        audio.currentTime = 0;
+      }
+    });
+
+    // Toggle Repeat
+    repeatBtn.addEventListener('click', () => {
+      isRepeat = !isRepeat;
+      repeatBtn.classList.toggle('active', isRepeat);
+    });
+
+    // Initial Init
+    loadSong();
+  </script>
+</body>
+</html>
