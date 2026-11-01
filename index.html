@@ -287,8 +287,13 @@
     // Play / Pause
     function playSong() {
       isPlaying = true;
-      audio.play();
-      playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      audio.play().then(() => {
+        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      }).catch(error => {
+        // Ditangkap jika diblokir browser
+        isPlaying = false;
+        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+      });
     }
 
     function pauseSong() {
@@ -344,8 +349,21 @@
       repeatBtn.classList.toggle('active', isRepeat);
     });
 
-    // Initial Init
+    // Initial Init & Auto-play trigger
     loadSong();
+
+    // Coba langsung jalankan lagu saat halaman selesai dimuat
+    window.addEventListener('DOMContentLoaded', () => {
+      playSong();
+    });
+
+    // Fallback: Jika autoplay diblokir browser, putar otomatis saat user pertama kali klik/sentuh layar
+    document.body.addEventListener('click', function unlockAudio() {
+      if (!isPlaying && audio.paused) {
+        playSong();
+      }
+      document.body.removeEventListener('click', unlockAudio);
+    }, { once: true });
   </script>
 </body>
 </html>
